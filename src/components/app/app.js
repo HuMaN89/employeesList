@@ -28,6 +28,8 @@ class App extends Component {
           id: 3,
         },
       ],
+      term: "",
+      filter: "",
     };
     this.maxId = 4;
   }
@@ -52,6 +54,7 @@ class App extends Component {
       };
     });
   };
+
   onToggleProp = (id, prop) => {
     // this.setState(({ data }) => {
     //   const index = data.findIndex((elem) => elem.id === id);
@@ -64,7 +67,6 @@ class App extends Component {
     //   ];
     //   return { data: newArr };
     // });
-    console.log(prop);
     this.setState(({ data }) => ({
       data: data.map((item) => {
         if (item.id === id) {
@@ -75,26 +77,46 @@ class App extends Component {
     }));
   };
 
-  // count = ({ data }) => {
-  //   let count = 0;
-  //   data.forEach((item) => {
-  //     count += 1;
-  //   });
-  //   console.log(count);
-  //   return count;
-  // };
+  searchEmp = (items, term) => {
+    if (term.length === 0) {
+      return items;
+    }
+    return items.filter((item) => {
+      return item.name.indexOf(term) > -1;
+    });
+  };
+
+  onUpdateSearch = (prop) => {
+    console.log(prop);
+    this.setState({ prop });
+  };
+
+  filterPost = (items, filter) => {
+    switch (filter) {
+      case "rise":
+        return items.filter((item) => item.rise);
+      case "moreThen1000":
+        return items.filter((item) => item.salary > 1000);
+
+      default:
+        return items;
+    }
+  };
+
   render() {
-    const employees = this.state.data.length;
-    const increased = this.state.data.filter((item) => item.increase).length;
+    const { data, term, filter } = this.state;
+    const visebleData = this.filterPost(this.searchEmp(data, term), filter);
+    const employees = visebleData.length;
+    const increased = visebleData.filter((item) => item.increase).length;
     return (
       <div className="app">
         <AppInfo count={employees} increased={increased} />
         <div className="search-panel">
-          <SerchPanel />
-          <AppFilter />
+          <SerchPanel onUpdateSearch={this.onUpdateSearch} />
+          <AppFilter onUpdateSearch={this.onUpdateSearch} />
         </div>
         <EmployeersList
-          data={this.state.data}
+          data={visebleData}
           onDelete={this.deleteItem}
           onToggleProp={this.onToggleProp}
         />
