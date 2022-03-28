@@ -6,29 +6,28 @@ class AppFilter extends Component {
     super(props);
     this.state = {
       term: "",
-      filter: "",
     };
   }
   onUpdateSearch = () => {
-    const filter = 1000;
+    const term = 1000;
     this.setState({
-      filter,
+      term,
     });
-    this.props.onUpdateSearch(filter);
+    this.props.onUpdateSearch(term);
   };
   onResetSearch = () => {
-    const filter = "";
+    const term = "";
     this.setState({
-      filter,
+      term,
     });
-    this.props.onUpdateSearch(filter);
+    this.props.onUpdateSearch(term);
   };
   toIncrease = () => {
-    const filter = "rise";
+    const term = "increase";
     this.setState({
-      filter,
+      term,
     });
-    this.props.onUpdateSearch(filter);
+    this.props.onUpdateSearch(term);
   };
   render() {
     return (

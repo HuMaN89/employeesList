@@ -81,31 +81,28 @@ class App extends Component {
     if (term.length === 0) {
       return items;
     }
+    if (term === ">") {
+      return items.filter((item) => {
+        return item.increase;
+      });
+    }
+    if (term === 1000) {
+      return items.filter((item) => {
+        return item.salary > 1000;
+      });
+    }
     return items.filter((item) => {
       return item.name.indexOf(term) > -1;
     });
   };
 
-  onUpdateSearch = (prop) => {
-    console.log(prop);
-    this.setState({ prop });
-  };
-
-  filterPost = (items, filter) => {
-    switch (filter) {
-      case "rise":
-        return items.filter((item) => item.rise);
-      case "moreThen1000":
-        return items.filter((item) => item.salary > 1000);
-
-      default:
-        return items;
-    }
+  onUpdateSearch = (term) => {
+    this.setState({ term });
   };
 
   render() {
-    const { data, term, filter } = this.state;
-    const visebleData = this.filterPost(this.searchEmp(data, term), filter);
+    const { data, term } = this.state;
+    const visebleData = this.searchEmp(data, term);
     const employees = visebleData.length;
     const increased = visebleData.filter((item) => item.increase).length;
     return (
