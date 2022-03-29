@@ -12,24 +12,30 @@ class App extends Component {
     super(props);
     this.state = {
       data: [
-        { name: "Иванов И.", salary: 500, increase: false, rise: true, id: 1 },
+        {
+          name: "Иванов И.",
+          salary: 500,
+          increase: false,
+          rise: true,
+          id: "1",
+        },
         {
           name: "Петров П.",
           salary: 1000,
           increase: true,
           rise: false,
-          id: 2,
+          id: "2",
         },
         {
           name: "Сидоров С.",
           salary: 1500,
           increase: false,
           rise: false,
-          id: 3,
+          id: "3",
         },
       ],
       term: "",
-      filter: "",
+      filter: "all",
     };
     this.maxId = 4;
   }
@@ -56,17 +62,6 @@ class App extends Component {
   };
 
   onToggleProp = (id, prop) => {
-    // this.setState(({ data }) => {
-    //   const index = data.findIndex((elem) => elem.id === id);
-    //   const old = data[index];
-    //   const newItem = { ...old, increase: !old.increase };
-    //   const newArr = [
-    //     ...data.slice(0, index),
-    //     newItem,
-    //     ...data.slice(index + 1),
-    //   ];
-    //   return { data: newArr };
-    // });
     this.setState(({ data }) => ({
       data: data.map((item) => {
         if (item.id === id) {
@@ -81,41 +76,73 @@ class App extends Component {
     if (term.length === 0) {
       return items;
     }
-    if (term === ">") {
-      return items.filter((item) => {
-        return item.increase;
-      });
-    }
-    if (term === 1000) {
-      return items.filter((item) => {
-        return item.salary > 1000;
-      });
-    }
     return items.filter((item) => {
       return item.name.indexOf(term) > -1;
     });
   };
 
-  onUpdateSearch = (term) => {
-    this.setState({ term });
+  filterEmp = (items, filter) => {
+    if (filter === "all") {
+      return items;
+    }
+    if (filter === "rise") {
+      return items.filter((item) => {
+        return item.rise;
+      });
+    }
+    if (filter === "moreThen1000") {
+      return items.filter((item) => {
+        return item.salary > 1000;
+      });
+    }
+  };
+  onUpdateProps = (prop) => {
+    switch (prop) {
+      case "moreThen1000":
+        this.setState({ filter: "moreThen1000" });
+        break;
+      case "rise":
+        this.setState({ filter: "rise" });
+        break;
+      case "all":
+        this.setState({ filter: "all" });
+        break;
+      default:
+        this.setState({ term: prop });
+        break;
+    }
   };
 
+  onSalaryChange = (id, newSalary) => {
+    this.setState(({ data }) => ({
+      data: data.map((item) => {
+        if (item.id === id) {
+          // console.log(item.id);
+          console.log({ ...item, salary: newSalary });
+          return { ...item, salary: newSalary };
+        }
+        console.log(item);
+        return item;
+      }),
+    }));
+  };
   render() {
-    const { data, term } = this.state;
-    const visebleData = this.searchEmp(data, term);
+    const { data, term, filter } = this.state;
+    const visebleData = this.searchEmp(this.filterEmp(data, filter), term);
     const employees = visebleData.length;
     const increased = visebleData.filter((item) => item.increase).length;
     return (
       <div className="app">
         <AppInfo count={employees} increased={increased} />
         <div className="search-panel">
-          <SerchPanel onUpdateSearch={this.onUpdateSearch} />
-          <AppFilter onUpdateSearch={this.onUpdateSearch} />
+          <SerchPanel onUpdateProps={this.onUpdateProps} />
+          <AppFilter onUpdateProps={this.onUpdateProps} filter={filter} />
         </div>
         <EmployeersList
           data={visebleData}
           onDelete={this.deleteItem}
           onToggleProp={this.onToggleProp}
+          onSalaryChange={this.onSalaryChange}
         />
         <EmployeersAddForm onSubmit={this.addItem} />
       </div>

@@ -1,7 +1,16 @@
 import "./employeers-list-item.css";
 
 const EmployeersListItem = (props) => {
-  const { name, salary, onDelete, onToggleProp, increase, rise } = props;
+  const {
+    id,
+    name,
+    salary,
+    onDelete,
+    onToggleProp,
+    increase,
+    rise,
+    onSalaryChange,
+  } = props;
   let classNames = "list-group-item d-flex justify-content-between";
   classNames += increase ? " increase" : "";
   classNames += rise ? " like" : "";
@@ -15,9 +24,24 @@ const EmployeersListItem = (props) => {
         {name}
       </span>
       <input
+        data-id={id}
         type="text"
         defaultValue={salary + "$"}
+        onBlur={(e) => {
+          e.target.value = salary + "$";
+        }}
         className="list-group-item-input"
+        onFocus={(e) => {
+          if (e.target.value[e.target.value.length - 1] === "$") {
+            e.target.value = e.target.value.slice(0, e.target.value.length - 1);
+          }
+        }}
+        onChange={(e) =>
+          onSalaryChange(
+            e.currentTarget.getAttribute("data-id"),
+            e.target.value
+          )
+        }
       />
       <div className="d-flex justify-content-center align-items-center">
         <button

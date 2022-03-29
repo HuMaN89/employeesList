@@ -7,12 +7,12 @@ class SerchPanel extends Component {
       term: "",
     };
   }
-  onUpdateSearch = (e) => {
+  onUpdateProps = (e) => {
     const term = e.target.value;
     this.setState({
       term,
     });
-    this.props.onUpdateSearch(term);
+    this.props.onUpdateProps(term);
   };
   render() {
     return (
@@ -20,7 +20,7 @@ class SerchPanel extends Component {
         type="text"
         className="form-control search-input"
         placeholder="Найти сотрудника"
-        onChange={this.onUpdateSearch}
+        onChange={this.onUpdateProps}
         value={this.state.term}
       />
     );
